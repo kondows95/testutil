@@ -34,25 +34,25 @@ func TestHandler(t *testing.T) {
 	testData := []TestData{
 		{
 			Book{BID: "BID0", Chapters: []Chapter{{CID: "CID4"}}, Author: Author{AID: "AID4"}},
-			map[string]interface{}{"BID": "", "Chapters": []Chapter{}, "Author": Author{}},
+			Fields{"BID": "", "Chapters": []Chapter{}, "Author": Author{}},
 			Book{BID: "", Chapters: []Chapter{}, Author: Author{}},
 			"Set zero values",
 		},
 		{
 			Book{BID: "BID1"},
-			map[string]interface{}{"Title": "Title0"},
+			Fields{"Title": "Title0"},
 			Book{BID: "BID1", Title: "Title0"},
 			"Set scalar value",
 		},
 		{
 			Book{BID: "BID2"},
-			map[string]interface{}{"Chapters": []Chapter{{CID: "CID2"}}},
+			Fields{"Chapters": []Chapter{{CID: "CID2"}}},
 			Book{BID: "BID2", Chapters: []Chapter{{CID: "CID2"}}},
 			"Set slice value",
 		},
 		{
 			Book{BID: "BID3"},
-			map[string]interface{}{"Author": Author{AID: "AID3"}},
+			Fields{"Author": Author{AID: "AID3"}},
 			Book{BID: "BID3", Author: Author{AID: "AID3"}},
 			"Set struct value",
 		},

@@ -4,7 +4,9 @@ import (
 	"reflect"
 )
 
-func Override(base interface{}, fields map[string]interface{}) interface{} {
+type Fields map[string]interface{}
+
+func Override(base interface{}, fields Fields) interface{} {
 	v := reflect.Indirect(reflect.ValueOf(base))
 	t := v.Type()
 	vResult := reflect.New(t).Elem()
