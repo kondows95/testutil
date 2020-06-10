@@ -4,23 +4,21 @@ import (
 	"reflect"
 )
 
-func Override(base interface{}, override interface{}) interface{} {
-	v1 := reflect.Indirect(reflect.ValueOf(base))
-	t1 := v1.Type()
-	v2 := reflect.Indirect(reflect.ValueOf(override))
-	t2 := v2.Type()
-	vResult := reflect.New(t1).Elem()
-	for i := 0; i < t1.NumField(); i++ {
-		ft1 := t1.Field(i)
-		fv1 := v1.FieldByName(ft1.Name)
-		ft2 := t2.Field(i)
-		fv2 := v2.FieldByName(ft2.Name)
-		fvResult := vResult.FieldByName(ft1.Name)
+func Override(base interface{}, fields map[string]interface{}) interface{} {
+	v := reflect.Indirect(reflect.ValueOf(base))
+	t := v.Type()
+	vResult := reflect.New(t).Elem()
+	for i := 0; i < t.NumField(); i++ {
+		ft := t.Field(i)
+		fv := v.FieldByName(ft.Name)
+		fvResult := vResult.FieldByName(ft.Name)
 
-		if !fv2.IsZero() {
-			fvResult.Set(fv2)
-		} else {
-			fvResult.Set(fv1)
+		fvResult.Set(fv)
+		for field, iVal := range fields {
+			if field == ft.Name {
+				fvResult.Set(reflect.Indirect(reflect.ValueOf(iVal)))
+				break
+			}
 		}
 	}
 	return vResult.Interface()

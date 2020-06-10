@@ -23,36 +23,43 @@ type Author struct {
 	Name string
 }
 
+type TestData struct {
+	base     interface{}
+	fields   map[string]interface{}
+	want     interface{}
+	testCase string
+}
+
 func TestHandler(t *testing.T) {
-	testData := []struct {
-		base     interface{}
-		override interface{}
-		want     interface{}
-	}{
+	testData := []TestData{
 		{
-			Book{BID: "BID0"},
-			Book{Title: "Title0"},
-			Book{BID: "BID0", Title: "Title0"},
+			Book{BID: "BID0", Chapters: []Chapter{{CID: "CID4"}}, Author: Author{AID: "AID4"}},
+			map[string]interface{}{"BID": "", "Chapters": []Chapter{}, "Author": Author{}},
+			Book{BID: "", Chapters: []Chapter{}, Author: Author{}},
+			"Set zero values",
 		},
 		{
 			Book{BID: "BID1"},
-			Book{Chapters: []Chapter{{CID: "CID1"}}},
-			Book{BID: "BID1", Chapters: []Chapter{{CID: "CID1"}}},
+			map[string]interface{}{"Title": "Title0"},
+			Book{BID: "BID1", Title: "Title0"},
+			"Set scalar value",
 		},
 		{
 			Book{BID: "BID2"},
-			Book{Author: Author{AID: "AID2"}},
-			Book{BID: "BID2", Author: Author{AID: "AID2"}},
+			map[string]interface{}{"Chapters": []Chapter{{CID: "CID2"}}},
+			Book{BID: "BID2", Chapters: []Chapter{{CID: "CID2"}}},
+			"Set slice value",
 		},
 		{
-			Book{Chapters: []Chapter{{CID: "CID3"}}},
-			Book{Author: Author{AID: "AID3"}},
-			Book{Chapters: []Chapter{{CID: "CID3"}}, Author: Author{AID: "AID3"}},
+			Book{BID: "BID3"},
+			map[string]interface{}{"Author": Author{AID: "AID3"}},
+			Book{BID: "BID3", Author: Author{AID: "AID3"}},
+			"Set struct value",
 		},
 	}
 
 	for index, d := range testData {
-		got := Override(d.base, d.override)
+		got := Override(d.base, d.fields)
 		if !reflect.DeepEqual(d.want, got) {
 			t.Errorf("TestCase-%v not match\n%v\n%v\n", index, d.want, got)
 		}
